@@ -65,6 +65,7 @@ export const theme = {
         m: 16,
         l: 24,
         xl: 32,
+        xxl: 48,
     },
 
     textProp: {
@@ -74,6 +75,7 @@ export const theme = {
             m: 16,
             l: 18,
             xl: 20,
+            xxl: 28,
         },
         weights: {
             regular: '400',
