@@ -32,7 +32,7 @@
         "expo-media-library",
         {
           "photosPermission": "Allow Pokédex to save Pokemon images to your photo library.",
-          "savePhotosPermission": "Allow Pokédx to save Pokemon images to your photo library."
+          "savePhotosPermission": "Allow Pokédex to save Pokemon images to your photo library."
         }
       ]
     ]

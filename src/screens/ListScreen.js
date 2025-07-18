@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, ActivityIndicator, Alert } from 'react-native';
+import { FlatList, ActivityIndicator, Alert, TextInput } from 'react-native';
 import styled from 'styled-components/native';
 import { theme } from '../theme';
 import { pokemonService } from '../services/PokemonService';
@@ -10,6 +10,8 @@ const ListScreen = ({ navigation }) => {
   
     // estados para gerenciar a lista de pokemons, carregamento e erros
     const [pokemonList, setPokemonList] = useState([]);
+    const [filteredPokemon, setFilteredPokemon] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -50,6 +52,7 @@ const ListScreen = ({ navigation }) => {
         );
         
         setPokemonList(detailedList);
+        setFilteredPokemon(detailedList);
         } catch (err) {
         console.error('Error fetching Pokemon list:', err);
         setError(err.message);
@@ -57,6 +60,27 @@ const ListScreen = ({ navigation }) => {
         } finally {
         setLoading(false);
         }
+    };
+
+    // funcao para filtrar pokemons com base no termo de pesquisa
+    const handleSearch = (text) => {
+        setSearchTerm(text);
+        
+        if (text === '') {
+            setFilteredPokemon(pokemonList);
+        } else {
+            const filtered = pokemonList.filter(pokemon =>
+                pokemon.name.toLowerCase().includes(text.toLowerCase()) ||
+                pokemon.id.toString().includes(text)
+            );
+            setFilteredPokemon(filtered);
+        }
+    };
+
+    // limpar pesquisa
+    const clearSearch = () => {
+        setSearchTerm('');
+        setFilteredPokemon(pokemonList);
     };
 
     // funcao chamada quando um card de pokemon é pressionado
@@ -100,12 +124,30 @@ const ListScreen = ({ navigation }) => {
     return (
         <Container>
         <Header>
-            <Title>Pokédex</Title>
-            <Subtitle>{pokemonList.length} pokemon</Subtitle>
+            <TitleContainer>
+                <PokeballImage source={require('../../images/pokeball.png')} />
+                <Title>Pokédex</Title>
+                <PokeballImage source={require('../../images/pokeball.png')} />
+            </TitleContainer>
+            <Subtitle>{filteredPokemon.length} pokémon</Subtitle>
         </Header>
         
+        <SearchContainer>
+            <SearchInput
+                placeholder="Search Pokemon by name or id:"
+                placeholderTextColor={theme.colors.textSecondary}
+                value={searchTerm}
+                onChangeText={handleSearch}
+            />
+            {searchTerm !== '' && (
+                <ClearButton onPress={clearSearch}>
+                    <ClearButtonText>✕</ClearButtonText>
+                </ClearButton>
+            )}
+        </SearchContainer>
+        
         <FlatList
-            data={pokemonList}
+            data={filteredPokemon}
             renderItem={renderPokemonCard}
             keyExtractor={(item) => item.id.toString()}
             numColumns={2}
@@ -132,15 +174,30 @@ const Header = styled.View`
   border-bottom-color: black;
 `;
 
-// titulo principal "Pokédex" com efeito de sombra p simular um contorno kkkkkk
+// container horizontal para titulo com pokeballs
+const TitleContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: ${theme.spacing.xs}px;
+`;
+
+// imagem da pokeball nos lados do titulo
+const PokeballImage = styled.Image`
+  width: 40px;
+  height: 40px;
+  margin: 0 ${theme.spacing.m}px;
+  opacity: 0.9;
+`;
+
+// titulo principal "Pokédx" com efeito de sombra p simular um contorno kkkkkk
 const Title = styled.Text`
-  font-size: 70px;
+  font-size: 60px;
   font-weight: ${theme.textProp.weights.bold};
   color: white;
   text-align: center;
-  margin-bottom: ${theme.spacing.xs}px;
-  text-shadow-offset: 2px 2px;
-  text-shadow-radius: 2px;
+  text-shadow-offset: 1px 1px;
+  text-shadow-radius: 1px;
   text-shadow-color: black;
 `;
 
@@ -195,6 +252,38 @@ const RetryText = styled.Text`
   color: white;
   font-size: ${theme.textProp.sizes.m}px;
   font-weight: ${theme.textProp.weights.medium};
+`;
+
+// container para a barra de pesquisa
+const SearchContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin: ${theme.spacing.m}px;
+  background-color: ${theme.colors.card};
+  border-radius: ${theme.borderRadius.lg}px;
+  border-width: 2px;
+  border-color: ${theme.colors.primary};
+  padding: ${theme.spacing.s}px;
+`;
+
+// input de pesquisa
+const SearchInput = styled.TextInput`
+  flex: 1;
+  font-size: ${theme.textProp.sizes.m}px;
+  color: ${theme.colors.text};
+  padding: ${theme.spacing.s}px;
+`;
+
+// botao para limpar pesquisa
+const ClearButton = styled.TouchableOpacity`
+  padding: ${theme.spacing.s}px;
+  margin-left: ${theme.spacing.s}px;
+`;
+
+// texto do botao limpar
+const ClearButtonText = styled.Text`
+  font-size: ${theme.textProp.sizes.l}px;
+  color: ${theme.colors.textSecondary};
 `;
 
 export default ListScreen;

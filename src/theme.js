@@ -83,6 +83,11 @@ export const theme = {
             semibold: '600',
             bold: '700',
         },
+        families: {
+            regular: 'System',
+            title: 'System',
+            body: 'System',
+        },
     },
 
     borderRadius: {
