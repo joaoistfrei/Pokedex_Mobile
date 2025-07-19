@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ActivityIndicator, Alert, Share, Linking } from 'react-native';
+import { ActivityIndicator, Alert, Share, Linking, Platform } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
 import { captureRef } from 'react-native-view-shot';
 import styled from 'styled-components/native';
 import { theme } from '../theme';
@@ -68,8 +69,8 @@ const DetailsScreen = ({ route, navigation }) => {
   const handleShareImage = async () => {
     setShowShareOptions(false);
     try {
-      // aguarda o modal fechar completamente
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // aguarda o modal fechar completamente e a imagem carregar
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // verifica se a referencia ainda e valida
       if (!viewRef.current) {
@@ -82,20 +83,40 @@ const DetailsScreen = ({ route, navigation }) => {
         format: 'png',
         quality: 1.0,
         result: 'tmpfile',
-        height: undefined,
-        width: undefined,
-        snapshotContentContainer: false,
       });
 
-      // salva a imagem no dispositivo
-      await MediaLibrary.saveToLibraryAsync(uri);
+      // salva a imagem no dispositivo (apenas se for iOS ou se tiver permissao)
+      try {
+        await MediaLibrary.saveToLibraryAsync(uri);
+      } catch (saveError) {
+        console.log('Could not save to library:', saveError.message);
+        // continua mesmo se nao conseguir salvar
+      }
       
-      // compartilha a imagem usando API nativa
-      await Share.share({
-        message: `Check out ${formatPokemonName(pokemon.name)} ${formatPokemonId(pokemon.id)} from the Pokédex!`,
-        url: uri,
-        title: `${formatPokemonName(pokemon.name)} - Pokemon Card`,
-      });
+      // compartilha usando metodo especifico para cada plataforma
+      if (Platform.OS === 'ios') {
+        // iOS: usa Share nativo que suporta imagens
+        await Share.share({
+          message: `Check out ${formatPokemonName(pokemon.name)} ${formatPokemonId(pokemon.id)} from the Pokédx!`,
+          url: uri,
+          title: `${formatPokemonName(pokemon.name)} - Pokemon Card`,
+        });
+      } else {
+        // Android: usa expo-sharing que funciona melhor com imagens
+        const isAvailable = await Sharing.isAvailableAsync();
+        if (isAvailable) {
+          await Sharing.shareAsync(uri, {
+            mimeType: 'image/png',
+            dialogTitle: `${formatPokemonName(pokemon.name)} - Pokemon Card`,
+          });
+        } else {
+          // fallback para compartilhar apenas texto se sharing nao estiver disponivel
+          await Share.share({
+            message: `Check out ${formatPokemonName(pokemon.name)} ${formatPokemonId(pokemon.id)} from the Pokédx!`,
+            title: `${formatPokemonName(pokemon.name)} - Pokemon Card`,
+          });
+        }
+      }
       
       Alert.alert('Success', 'Pokemon card saved to your photos and shared!');
     } catch (err) {
@@ -162,8 +183,8 @@ const DetailsScreen = ({ route, navigation }) => {
     <Container typeColor={typePastelColor}>
       {/* view capturavel para screenshot */}
       <ShareableView 
-        ref={viewRef} 
-        collapsable={false} 
+        ref={viewRef}
+        collapsable={false}
         typeColor={typePastelColor}
         renderToHardwareTextureAndroid={true}
       >
@@ -203,7 +224,11 @@ const DetailsScreen = ({ route, navigation }) => {
           </TypeBadgeContainer>
 
           {/* imagem principal do pokemon */}
-          <PokemonImage source={{ uri: pokemon.image }} />
+          <PokemonImage 
+            source={{ uri: pokemon.image }} 
+            key={`pokemon-${pokemon.id}`}
+            resizeMode="contain"
+          />
 
           {/* card com informacoes basicas */}
           <InfoCard>
@@ -362,7 +387,14 @@ const HeaderSubtitle = styled.Text`
 `;
 
 // area de conteudo principal com scroll
-const Content = styled.ScrollView`
+const Content = styled.ScrollView.attrs({
+  contentContainerStyle: {
+    paddingBottom: 60,
+    flexGrow: 1,
+  },
+  showsVerticalScrollIndicator: false,
+  nestedScrollEnabled: true,
+})`
   flex: 1;
   padding: ${theme.spacing.m}px;
 `;
@@ -398,7 +430,8 @@ const PokemonImage = styled.Image`
   margin-bottom: -${theme.spacing.xxl}px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: ${theme.borderRadius.lg}px;
-  z-index: 1;
+  z-index: ${Platform.OS === 'android' ? 10 : 1};
+  elevation: ${Platform.OS === 'android' ? 10 : 0};
 `;
 
 // card com informacoes do pokemon
@@ -411,7 +444,8 @@ const InfoCard = styled.View`
   shadow-offset: ${theme.shadows.shadowOffset.width}px ${theme.shadows.shadowOffset.height}px;
   shadow-opacity: ${theme.shadows.shadowOpacity};
   shadow-radius: ${theme.shadows.shadowRadius}px;
-  elevation: ${theme.shadows.elevation};
+  elevation: ${Platform.OS === 'android' ? 5 : theme.shadows.elevation};
+  z-index: ${Platform.OS === 'android' ? 1 : 0};
 `;
 
 // linha de informacao basica

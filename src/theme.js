@@ -1,3 +1,7 @@
+import { Platform, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
+
 export const theme = {
 
 
@@ -60,34 +64,44 @@ export const theme = {
     },
     
     spacing: {
-        xs: 4,
-        s: 8,
-        m: 16,
-        l: 24,
-        xl: 32,
-        xxl: 48,
+        xs: Platform.OS === 'ios' ? 4 : 3,
+        s: Platform.OS === 'ios' ? 8 : 7,
+        m: Platform.OS === 'ios' ? 16 : 14,
+        l: Platform.OS === 'ios' ? 24 : 22,
+        xl: Platform.OS === 'ios' ? 32 : 30,
+        xxl: Platform.OS === 'ios' ? 48 : 44,
     },
 
     textProp: {
         sizes: {
-            xs: 12,
-            s: 14,
-            m: 16,
-            l: 18,
-            xl: 20,
-            xxl: 28,
+            xxs: Platform.OS === 'ios' ? 8 : 7,
+            xs: Platform.OS === 'ios' ? 12 : 11,
+            s: Platform.OS === 'ios' ? 14 : 13,
+            m: Platform.OS === 'ios' ? 16 : 15,
+            l: Platform.OS === 'ios' ? 18 : 17,
+            xl: Platform.OS === 'ios' ? 20 : 19,
+            xxl: Platform.OS === 'ios' ? 28 : 26,
+            title: Platform.OS === 'ios' ? 60 : 40,
         },
         weights: {
             regular: '400',
             medium: '500',
             semibold: '600',
-            bold: '700',
+            bold: Platform.OS === 'ios' ? '700' : '800',
         },
         families: {
-            regular: 'System',
-            title: 'System',
-            body: 'System',
+            regular: Platform.OS === 'ios' ? 'System' : 'Roboto',
+            title: Platform.OS === 'ios' ? 'System' : 'Roboto',
+            body: Platform.OS === 'ios' ? 'System' : 'Roboto',
         },
+    },
+
+    // Add responsive scaling for better cross-platform consistency
+    responsive: {
+        scale: width / 375, // iPhone 6 as base (375px width)
+        width,
+        isSmallScreen: width < 375,
+        isLargeScreen: width > 414,
     },
 
     borderRadius: {

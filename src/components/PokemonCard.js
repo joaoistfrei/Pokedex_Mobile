@@ -124,7 +124,7 @@ const TypeBadge = styled.View`
 
 // texto do tipo dentro do badge
 const TypeText = styled.Text`
-  font-size: ${theme.textProp.sizes.xs}px;
+  font-size: ${theme.textProp.sizes.xxs}px;
   font-weight: ${theme.textProp.weights.medium};
   color: white;
   text-transform: capitalize;

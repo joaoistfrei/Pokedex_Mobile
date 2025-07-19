@@ -192,7 +192,7 @@ const PokeballImage = styled.Image`
 
 // titulo principal "Pokédx" com efeito de sombra p simular um contorno kkkkkk
 const Title = styled.Text`
-  font-size: 60px;
+  font-size: ${theme.textProp.sizes.title}px;
   font-weight: ${theme.textProp.weights.bold};
   color: white;
   text-align: center;
