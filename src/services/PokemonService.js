@@ -7,14 +7,12 @@ export const pokemonService = {
       const response = await fetch(`${BASE_URL}/pokemon?limit=${POKEMON_LIMIT}`);
       const data = await response.json();
       
-      // Filter out variant forms (they contain hyphens in specific patterns)
       const mainPokemon = data.results.filter(pokemon => {
         // Keep all Pokemon without hyphens
         if (!pokemon.name.includes('-')) {
           return true;
         }
         
-        // Keep some specific forms that are main forms
         const allowedForms = [
           'nidoran-f', 'nidoran-m', 'mr-mime', 'mime-jr',
           'ho-oh', 'porygon-z', 'jangmo-o', 'hakamo-o', 'kommo-o',
@@ -25,7 +23,7 @@ export const pokemonService = {
           'iron-thorns', 'wo-chien', 'chien-pao', 'ting-lu', 'chi-yu'
         ];
         
-        // Skip variant forms like mega, alola, galar, etc.
+        // Pulando formas variantes de Pokémon
         const variantPatterns = [
           'mega', 'alola', 'galar', 'hisui', 'paldea', 'gmax',
           'totem', 'primal', 'origin', 'therian', 'zen',
@@ -51,7 +49,6 @@ export const pokemonService = {
       });
       
       return mainPokemon.map((pokemon, index) => {
-        // getting the pokemon id from the url
         const pokemonId = pokemon.url.split('/').slice(-2, -1)[0];
         
         return {

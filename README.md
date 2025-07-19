@@ -1,178 +1,105 @@
-# Pokédex Mobile App 📱
+============ Pokédex Mobile ============
 
-A beautiful and functional Pokédx mobile application built with React Native and Expo, featuring all 1010 Pokémon from the PokéAPI. This app provides an intuitive interface to browse, search, and share your favorite Pokémon!
+Um app mobile de Pokédex construído com React Native e o Expo go, trazendo todos os Pokémons da PokéAPI. O app tem uma interface intuitiva e permite pesquisar e compartilhar seus Pokémon favoritos =)
 
-## ✨ Features
 
-- **Complete Pokédx**: Browse all 1010 Pokémon with beautiful cards
-- **Smart Search**: Search by Pokémon name or ID number
-- **Detailed Views**: Comprehensive Pokémon information including stats, types, height, and weight
-- **Cross-Platform Sharing**: Share Pokémon cards as images or links (works on both iOS and Android!)
-- **Responsive Design**: Optimized for both iPhone and Android devices
-- **Smooth Navigation**: Intuitive navigation between list and detail screens
+== Funcionalidades ==
 
-## 🛠 Tech Stack
+-> Pokédex completa com todos os Pokémon
+-> Sistema de busca por nome ou número
+-> Telas detalhadas com stats, tipos, altura e peso
+-> Compartilhamento de cards como imagem (iOS e Android)
+-> Design responsivo para diferentes dispositivos
+-> Navegação fluida entre telas
 
-- **React Native** - Cross-platform mobile development
-- **Expo SDK 53** - Development platform and build tools
-- **Styled Components** - CSS-in-JS styling solution
-- **React Navigation** - Navigation library for screen transitions
-- **PokéAPI** - RESTful API for Pokémon data
-- **Expo Media Library** - Device photo library access
-- **React Native View Shot** - Screenshot capture functionality
 
-## 📱 Project Structure
+== Detalhes técnicos ==
+
+- React Native & Expo SDK 53
+- Styled Components para estilização
+- React Navigation para navegação
+- PokéAPI para dados dos Pokémon
+- Expo Media Library & React Native View Shot para screenshots
+
+
+== Estrutura do projeto ==
 
 ```
 pokedex/
-├── App.js                      # Main app entry point
-├── app.json                    # Expo configuration
-├── babel.config.js             # Babel configuration
-├── package.json                # Dependencies and scripts
+├── App.js                      
+├── app.json                    
+├── babel.config.js             
+├── package.json                
 ├── images/
-│   └── pokeball.png           # App assets
+│   └── pokeball.png           
 └── src/
-    ├── theme.js               # Centralized theming with cross-platform adjustments
+    ├── theme.js               
     ├── components/
-    │   └── PokemonCard.js     # Reusable Pokemon card component
+    │   └── PokemonCard.js     
     ├── navigation/
-    │   └── AppNavigator.js    # Navigation configuration
+    │   └── AppNavigator.js    
     ├── screens/
-    │   ├── ListScreen.js      # Main Pokemon list with search
-    │   └── DetailsScreen.js   # Individual Pokemon details
+    │   ├── ListScreen.js      
+    │   └── DetailsScreen.js   
     └── services/
-        └── PokemonService.js  # API service and data formatting
+        └── PokemonService.js  
 ```
 
-## 🚀 Getting Started
+== Como Rodar o Projeto ==
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
-- Expo CLI (`npm install -g expo-cli`)
-- iOS Simulator (for iOS development) or Android Studio (for Android development)
+=> Pré-requisitos:
 
-### Installation
+- Node.js (v16+)
+- Expo CLI instalado globalmente
+- Simulador iOS ou Android Studio configurado
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/joaoistfrei/Pokedex_Mobile.git
-   cd Pokedex_Mobile
-   ```
+=> Instalação:
+-bash
+git clone https://github.com/joaoistfrei/Pokedex_Mobile.git
+cd Pokedex_Mobile
+npm install
+npm start
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
 
-3. **Start the development server**
-   ```bash
-   npm start
-   ```
+Para rodar em um dispositivo específico:
+-bash
+npm run ios 
+npm run android
 
-4. **Run on your preferred platform**
-   ```bash
-   # For iOS
-   npm run ios
-   
-   # For Android
-   npm run android
-   ```
 
-## 🔧 Development Process
+== Processo de desenvolvimento ==
 
-This project was developed incrementally with several interesting challenges and solutions:
+=> Desafios e soluções:
 
-### Initial Setup
-Started with the basic React Native + Expo setup, implementing the core navigation structure and basic Pokemon list functionality using the PokéAPI.
+O maior desafio foi fazer o compartilhamento funcionar no Android. No iOS funcionava perfeitamente (onde comecei os testes), mas no Android só compartilhava texto. Depois de muito debugging descobri que:
 
-### API Integration
-Implemented a comprehensive Pokemon service that handles:
-- Fetching the complete list of 1010 Pokémon
-- Individual Pokemon details with proper error handling
-- Data formatting for consistent display
-- Portuguese comments throughout the codebase for better maintainability
+No iOS o `Share.share()` nativo funciona bem com URLs de imagem, já no Android a API nativa tem limitações com arquivos de imagem.
 
-### Cross-Platform Consistency
-One of the biggest challenges was ensuring the app looked and felt consistent across iOS and Android. We implemented:
-- Platform-specific theming using `Platform.OS` conditionals
-- Different font sizes and spacing for iOS vs Android
-- Responsive design patterns that work on various screen sizes
 
-### Search Functionality
-Added a robust search system that allows users to find Pokémon by:
-- Name (case-insensitive)
-- Pokédx number
-- Real-time filtering as you type
+== Referências e inspirações ==
 
-### Sharing Feature Challenge
-Initially ran into a major issue where sharing Pokémon cards worked perfectly on iOS but only shared text on Android. After investigation, we discovered that:
+=> Documentação oficial do React Native
+=> Documentação do PokéAPI -> https://pokeapi.co/
+=> Mini tutoriais de react: 
+-https://youtu.be/G6D9cBaLViA
+-https://www.youtube.com/watch?v=-L0BSSQBWOI
 
-- **iOS**: Native `Share.share()` API properly handles image URLs
-- **Android**: Native sharing API has limitations with image files
 
-**Solution**: Implemented platform-specific sharing logic:
-```javascript
-if (Platform.OS === 'ios') {
-  // Use native Share API for iOS
-  await Share.share({
-    message: `Check out ${pokemonName}!`,
-    url: imageUri,
-    title: 'Pokemon Card',
-  });
-} else {
-  // Use expo-sharing for Android
-  await Sharing.shareAsync(imageUri, {
-    mimeType: 'image/png',
-    dialogTitle: 'Pokemon Card',
-  });
-}
-```
+== Uso de Inteligência Artificial ==
 
-This fix required adding the `expo-sharing` dependency specifically for Android image sharing capabilities.
+Nesse projeto, utilizei o Github Copilot para me auxiliar em detalhes técnicos da implementação de várias funções e em como definir a estrutura do projeto como um todo. Como desenvolvi no VSCode, ele me ajudou a entender como instalar as dependências e preparar o projeto para ser utilizado e testado. 
 
-## 🎨 Design Decisions
 
-### Theme System
-Created a centralized theme system that handles:
-- Colors (primary, secondary, background, text)
-- Typography (sizes, weights)
-- Spacing (consistent margins and padding)
-- Platform-specific adjustments
+== Próximas ideias de melhoria ==
 
-### Component Architecture
-- **PokemonCard**: Reusable component with type-based coloring
-- **Screens**: Separation of concerns between list and detail views
-- **Services**: Centralized API logic with proper error handling
+-> Adicionar favoritos
+-> Implementar busca por tipo
+-> Colocar animações
+-> Cache offline dos dados
+-> Modo escuro
+-> Ver as habilidades e golpes de cada Pokémon
 
-### User Experience
-- Loading states for better perceived performance
-- Error handling with retry mechanisms
-- Smooth transitions between screens
-- Visual feedback for user interactions
 
-## 🐛 Known Issues & Solutions
+== Licença ==
 
-1. **Font Integration**: Initially attempted to use custom Pokemon fonts but ran into compatibility issues. Solved by using system fonts with proper styling.
-
-2. **Image Sharing**: Cross-platform sharing required platform-specific implementations as described above.
-
-3. **Memory Management**: With 1010 Pokémon, implemented efficient data loading and caching strategies.
-
-## 🤝 Contributing
-
-Feel free to submit issues, feature requests, or pull requests. This project is open for improvements and new features!
-
-## 📄 License
-
-This project is for educational purposes. Pokémon and related characters are trademarks of Nintendo, Game Freak, and Creatures Inc.
-
-## 🙏 Acknowledgments
-
-- [PokéAPI](https://pokeapi.co/) for providing the comprehensive Pokémon database
-- The React Native and Expo communities for excellent documentation and support
-- Nintendo, Game Freak, and Creatures Inc. for creating the amazing Pokémon universe
-
----
-
-Built with ❤️ and lots of ☕ by a passionate developer who grew up playing Pokémon games!
+Projeto educacional. Pokémon é marca registrada da Nintendo, Game Freak e Creatures Inc.

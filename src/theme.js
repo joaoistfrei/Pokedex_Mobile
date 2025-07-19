@@ -14,7 +14,6 @@ export const theme = {
         border: '#E5E7EB',
         shadow: '#000000',
         
-        // Respective color for each Pokémon's element type
         types: {
             normal: '#A8A878',
             fire: '#F08030',
