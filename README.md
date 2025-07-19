@@ -54,17 +54,29 @@ pokedex/
 - Simulador iOS ou Android Studio configurado
 
 => Instalação:
--bash
+
+```bash
 git clone https://github.com/joaoistfrei/Pokedex_Mobile.git
+
 cd Pokedex_Mobile
+
 npm install
-npm start
+
+npm install -g @expo/cli
+
+npx expo start
+```
 
 
 Para rodar em um dispositivo específico:
--bash
-npm run ios 
-npm run android
+
+```bash
+npx expo start --ios
+
+npx expo start --android
+
+npx expo start --web
+```
 
 
 == Processo de desenvolvimento ==
